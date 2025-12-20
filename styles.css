@@ -86,8 +86,9 @@ body {
 /* Photo Grid */
 .photo-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 2px;
+    max-width: 100%;
 }
 
 .photo-item {
@@ -97,7 +98,7 @@ body {
 }
 
 .photo-item img {
-    width: 100%;
+    width: 80%;
     height: auto;
     display: block;
     cursor: pointer;
@@ -130,6 +131,34 @@ body {
     margin-bottom: 20px;
 }
 
+.background-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.background-logo {
+    height: 48px;
+    width: auto;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.background-logo-small {
+    height: 34px;
+    width: auto;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.background-logo-tiny {
+    height: 24px;
+    width: auto;
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+
 /* Content Section */
 .content-thumbnail {
     margin-top: 20px;
@@ -142,7 +171,7 @@ body {
 }
 
 .content-image {
-    max-width: 500px;
+    max-width: 400px;
     height: auto;
     display: block;
     cursor: pointer;
@@ -204,7 +233,7 @@ body {
     margin-top: 20px;
 }
 
-.bio-founder {
+.bio-description {
     font-size: 16px;
     font-weight: 300;
     color: #000;
@@ -251,7 +280,7 @@ body {
 }
 
 .music-image {
-    max-width: 300px;
+    max-width: 240px;
     height: auto;
     display: block;
     cursor: pointer;
