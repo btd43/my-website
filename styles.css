@@ -87,19 +87,22 @@ body {
 .photo-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 2px;
+    gap: 30px;
     max-width: 100%;
 }
 
 .photo-item {
-    width: 100%;
+    width: auto;
     overflow: hidden;
     background-color: #fff;
+    display: flex;
+    justify-content: flex-start;
 }
 
 .photo-item img {
-    width: 80%;
+    width: auto;
     height: auto;
+    max-width: 80%;
     display: block;
     cursor: pointer;
 }
@@ -258,7 +261,7 @@ body {
     font-weight: 300;
     color: #000;
     margin-top: 2px;
-    margin-bottom: 0;
+    margin-bottom: 30px;
 }
 
 .music-content {
