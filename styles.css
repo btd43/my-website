@@ -138,6 +138,17 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-bottom: 0;
+}
+
+.background-description {
+    margin-left: 20px;
+    margin-top: .5px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    font-weight: 300;
+    color: #000;
+    line-height: 1.2;
 }
 
 .background-logo {
@@ -227,6 +238,15 @@ body {
     color: #000;
     margin-bottom: 0;
     margin-top: 2px;
+}
+
+.bio-resume-spacer {
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+.bio-resume-description {
+    margin-bottom: 20px;
 }
 
 .bio-location {
