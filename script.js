@@ -98,16 +98,23 @@ function setupVideoPlayer(videoId, playButtonId) {
     const wrapper = playButton.closest('.video-player-wrapper');
     if (!wrapper) return;
     
-    // Click to play/pause
-    wrapper.addEventListener('click', function() {
+    // Click/touch to play/pause
+    function handlePlayPause(e) {
+        e.preventDefault();
+        e.stopPropagation();
         if (video.paused) {
-            video.play();
+            video.play().catch(function(error) {
+                console.log('Play failed:', error);
+            });
             wrapper.classList.add('playing');
         } else {
             video.pause();
             wrapper.classList.remove('playing');
         }
-    });
+    }
+    
+    wrapper.addEventListener('click', handlePlayPause);
+    wrapper.addEventListener('touchend', handlePlayPause);
     
     // Update play button visibility
     video.addEventListener('play', function() {
