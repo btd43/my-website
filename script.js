@@ -135,15 +135,54 @@ document.addEventListener('DOMContentLoaded', function() {
     setupVideoPlayer('video2', 'playButton2');
     setupVideoPlayer('video3', 'playButton3');
     
-    // Force load video metadata for faster thumbnail display
+    // Force load video metadata and display thumbnails on mobile
     const videos = ['video1', 'video2', 'video3'];
     videos.forEach(function(videoId) {
         const video = document.getElementById(videoId);
         if (video) {
+            // Function to show thumbnail
+            function showThumbnail() {
+                if (video.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+                    video.currentTime = 0.1;
+                    video.pause();
+                }
+            }
+            
             // Load metadata immediately
             video.load();
-            // Ensure thumbnail is visible
-            video.currentTime = 0.1;
+            
+            // Multiple strategies to ensure thumbnail shows on mobile
+            video.addEventListener('loadedmetadata', function() {
+                showThumbnail();
+            }, { once: true });
+            
+            video.addEventListener('loadeddata', function() {
+                showThumbnail();
+            }, { once: true });
+            
+            video.addEventListener('canplay', function() {
+                if (video.currentTime === 0 || video.readyState < 2) {
+                    showThumbnail();
+                }
+            }, { once: true });
+            
+            // Fallback: try after a delay
+            setTimeout(function() {
+                if (video.readyState >= 1) {
+                    showThumbnail();
+                }
+            }, 200);
+            
+            // Also try when video becomes visible (for lazy loading)
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting && video.readyState >= 1) {
+                        showThumbnail();
+                        observer.unobserve(video);
+                    }
+                });
+            });
+            observer.observe(video);
         }
     });
 });

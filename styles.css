@@ -212,7 +212,8 @@ body {
 .vimeo-container iframe {
     width: 100%;
     max-width: 640px;
-    height: 360px;
+    height: auto;
+    aspect-ratio: 16 / 9;
     display: block;
 }
 
@@ -231,6 +232,15 @@ body {
     display: block;
     background-color: #000;
     object-fit: contain;
+    min-height: 200px;
+}
+
+.video-player-wrapper video::-webkit-media-controls {
+    display: none !important;
+}
+
+.video-player-wrapper video::-webkit-media-controls-enclosure {
+    display: none !important;
 }
 
 .video-play-button {
@@ -456,11 +466,20 @@ body {
         margin-bottom: 20px;
     }
 
-    .vimeo-container iframe,
+    .vimeo-container iframe {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 16 / 9;
+        min-height: 200px;
+    }
+
     .video-player-wrapper video {
         width: 100%;
         max-width: 100%;
         height: auto;
+        aspect-ratio: 16 / 9;
+        min-height: 200px;
     }
 
     .video-play-button {
