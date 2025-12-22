@@ -89,3 +89,43 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// Minimalist video player functionality
+function setupVideoPlayer(videoId, playButtonId) {
+    const video = document.getElementById(videoId);
+    const playButton = document.getElementById(playButtonId);
+    if (!video || !playButton) return;
+    
+    const wrapper = playButton.closest('.video-player-wrapper');
+    if (!wrapper) return;
+    
+    // Click to play/pause
+    wrapper.addEventListener('click', function() {
+        if (video.paused) {
+            video.play();
+            wrapper.classList.add('playing');
+        } else {
+            video.pause();
+            wrapper.classList.remove('playing');
+        }
+    });
+    
+    // Update play button visibility
+    video.addEventListener('play', function() {
+        wrapper.classList.add('playing');
+    });
+    
+    video.addEventListener('pause', function() {
+        wrapper.classList.remove('playing');
+    });
+    
+    video.addEventListener('ended', function() {
+        wrapper.classList.remove('playing');
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupVideoPlayer('video1', 'playButton1');
+    setupVideoPlayer('video2', 'playButton2');
+    setupVideoPlayer('video3', 'playButton3');
+});
+

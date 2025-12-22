@@ -216,6 +216,37 @@ body {
     display: block;
 }
 
+.video-player-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.video-player-wrapper video {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    display: block;
+}
+
+.video-play-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    transition: opacity 0s;
+    pointer-events: none;
+}
+
+.video-player-wrapper.playing .video-play-button {
+    opacity: 0;
+}
+
+.video-player-wrapper:not(.playing):hover .video-play-button {
+    opacity: 1;
+}
+
 .vimeo-caption {
     font-size: 12px;
     font-weight: 300;
