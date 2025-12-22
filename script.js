@@ -134,5 +134,17 @@ document.addEventListener('DOMContentLoaded', function() {
     setupVideoPlayer('video1', 'playButton1');
     setupVideoPlayer('video2', 'playButton2');
     setupVideoPlayer('video3', 'playButton3');
+    
+    // Force load video metadata for faster thumbnail display
+    const videos = ['video1', 'video2', 'video3'];
+    videos.forEach(function(videoId) {
+        const video = document.getElementById(videoId);
+        if (video) {
+            // Load metadata immediately
+            video.load();
+            // Ensure thumbnail is visible
+            video.currentTime = 0.1;
+        }
+    });
 });
 

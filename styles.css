@@ -229,6 +229,8 @@ body {
     max-width: 640px;
     height: auto;
     display: block;
+    background-color: #000;
+    object-fit: contain;
 }
 
 .video-play-button {
