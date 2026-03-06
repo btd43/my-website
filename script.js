@@ -26,11 +26,11 @@ document.querySelectorAll('.nav-item').forEach(anchor => {
     });
 });
 
-// Show photographs section by default on page load
+// Show bio section by default on page load
 document.addEventListener('DOMContentLoaded', function() {
-    const photographsSection = document.getElementById('photographs');
-    if (photographsSection) {
-        photographsSection.classList.add('active');
+    const bioSection = document.getElementById('bio');
+    if (bioSection) {
+        bioSection.classList.add('active');
     }
 });
 
