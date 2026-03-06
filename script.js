@@ -142,16 +142,28 @@ document.addEventListener('DOMContentLoaded', function() {
         if (video) {
             // Function to show thumbnail
             function showThumbnail() {
-                if (video.readyState >= 2) { // HAVE_CURRENT_DATA or higher
-                    video.currentTime = 0.1;
-                    video.pause();
+                try {
+                    if (video.readyState >= 1) { // HAVE_METADATA or higher
+                        // Seek to first frame to display thumbnail
+                        video.currentTime = 0.01;
+                        video.pause();
+                        // Force a repaint
+                        video.style.display = 'none';
+                        video.offsetHeight; // Trigger reflow
+                        video.style.display = 'block';
+                    }
+                } catch(e) {
+                    console.log('Thumbnail load error:', e);
                 }
             }
             
             // Load metadata immediately
             video.load();
             
-            // Multiple strategies to ensure thumbnail shows on mobile
+            // Set initial time to show thumbnail
+            video.currentTime = 0.01;
+            
+            // Multiple strategies to ensure thumbnail shows
             video.addEventListener('loadedmetadata', function() {
                 showThumbnail();
             }, { once: true });
@@ -161,29 +173,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }, { once: true });
             
             video.addEventListener('canplay', function() {
-                if (video.currentTime === 0 || video.readyState < 2) {
-                    showThumbnail();
-                }
+                showThumbnail();
             }, { once: true });
             
-            // Fallback: try after a delay
+            video.addEventListener('seeked', function() {
+                video.pause();
+            }, { once: true });
+            
+            // Fallback: try after delays
             setTimeout(function() {
-                if (video.readyState >= 1) {
-                    showThumbnail();
-                }
-            }, 200);
+                showThumbnail();
+            }, 100);
+            
+            setTimeout(function() {
+                showThumbnail();
+            }, 500);
             
             // Also try when video becomes visible (for lazy loading)
             const observer = new IntersectionObserver(function(entries) {
                 entries.forEach(function(entry) {
-                    if (entry.isIntersecting && video.readyState >= 1) {
+                    if (entry.isIntersecting) {
                         showThumbnail();
                         observer.unobserve(video);
                     }
                 });
-            });
+            }, { threshold: 0.1 });
             observer.observe(video);
         }
     });
 });
-
