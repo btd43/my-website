@@ -15,6 +15,7 @@
             </div>
             <nav class="sidebar-nav">
                 <a href="#bio" class="nav-item active">Bio</a>
+                <a href="#journal" class="nav-item">Journal</a>
                 <a href="#content" class="nav-item">Videos</a>
                 <a href="#music" class="nav-item">Music</a>
                 <a href="#photographs" class="nav-item">Photographs</a>
@@ -43,8 +44,46 @@
                 </div>
             </section>
 
+            <section id="journal" class="section">
+                <div class="content-wrapper">
+                    <div class="stories-header">
+                        <h2>Journal</h2>
+                        <div class="journal-header-right">
+                            <button id="journal-today-btn" class="stories-btn stories-btn-secondary" type="button">Today</button>
+                            <button id="stories-new-btn" class="stories-btn" type="button">Write</button>
+                        </div>
+                    </div>
+
+                    <div class="journal-subhead">
+                        <div id="journal-active-date" class="journal-active-date" aria-live="polite"></div>
+                    </div>
+
+                    <div id="stories-editor" class="stories-editor" aria-label="Journal editor">
+                        <input id="stories-title" class="stories-title" type="text" placeholder="Title (optional)" maxlength="120" />
+                        <textarea id="stories-body" class="stories-body" placeholder="Write something…" rows="10"></textarea>
+                        <div class="stories-actions">
+                            <div class="stories-hint">Saved on this device.</div>
+                            <div class="stories-actions-right">
+                                <button id="stories-cancel-btn" class="stories-btn stories-btn-secondary">Cancel</button>
+                                <button id="stories-save-btn" class="stories-btn">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="journal-layout">
+                        <div id="stories-list" class="stories-list" aria-label="Journal days"></div>
+                    </div>
+                </div>
+            </section>
+
             <section id="photographs" class="section">
                 <div class="photo-grid">
+                    <div class="photo-item">
+                        <img src="images/pic5.jpg" alt="Photograph 5">
+                    </div>
+                    <div class="photo-item">
+                        <img src="images/pic6.png" alt="Photograph 6">
+                    </div>
                     <div class="photo-item">
                         <img src="images/pic1.jpg" alt="Photograph 1">
                     </div>
@@ -56,12 +95,6 @@
                     </div>
                     <div class="photo-item">
                         <img src="images/pic4.JPG" alt="Photograph 4">
-                    </div>
-                    <div class="photo-item">
-                        <img src="images/pic5.jpg" alt="Photograph 5">
-                    </div>
-                    <div class="photo-item">
-                        <img src="images/pic6.png" alt="Photograph 6">
                     </div>
                     <div class="photo-item">
                         <img src="images/pic7.jpg" alt="Photograph 7">
