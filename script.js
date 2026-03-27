@@ -34,59 +34,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Journal (local, by day)
-const STORIES_STORAGE_KEY = 'btd_journal_v2';
+// Journal — read-only for visitors; source of truth is data/journal.json in the repo
+const JOURNAL_DATA_URL = 'data/journal.json';
 
-function safeParseJSON(value, fallback) {
-    try {
-        const parsed = JSON.parse(value);
-        return parsed ?? fallback;
-    } catch {
-        return fallback;
-    }
-}
-
-function loadStories() {
-    const raw = window.localStorage.getItem(STORIES_STORAGE_KEY);
-    const data = safeParseJSON(raw, null);
-    if (data && typeof data === 'object' && data.entries && typeof data.entries === 'object') {
-        return data;
-    }
-
-    // Migrate from old array format (if present)
-    const legacyRaw = window.localStorage.getItem('btd_stories_v1');
-    const legacy = safeParseJSON(legacyRaw, []);
-    if (Array.isArray(legacy)) {
-        const entries = {};
-        legacy.forEach((s) => {
-            const createdAt = s?.createdAt ? new Date(s.createdAt) : new Date();
-            const dateKey = toLocalDateKey(createdAt);
-            if (!entries[dateKey]) {
-                entries[dateKey] = {
-                    title: (s?.title || '').trim(),
-                    body: (s?.body || '').trim(),
-                    createdAt: createdAt.toISOString(),
-                    updatedAt: createdAt.toISOString(),
-                };
-            }
-        });
-        const migrated = { version: 2, entries };
-        window.localStorage.setItem(STORIES_STORAGE_KEY, JSON.stringify(migrated));
-        return migrated;
-    }
-
-    return { version: 2, entries: {} };
-}
-
-function saveStories(stories) {
-    window.localStorage.setItem(STORIES_STORAGE_KEY, JSON.stringify(stories));
-}
-
-function formatStoryDate(iso) {
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return '';
-    return d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
-}
+let publishedJournal = { version: 2, entries: {} };
 
 function escapeHTML(str) {
     return String(str)
@@ -97,29 +48,11 @@ function escapeHTML(str) {
         .replaceAll("'", '&#39;');
 }
 
-function toLocalDateKey(d) {
-    const dt = new Date(d);
-    const y = dt.getFullYear();
-    const m = String(dt.getMonth() + 1).padStart(2, '0');
-    const day = String(dt.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-}
-
 function formatDayLabel(dateKey) {
     // dateKey: YYYY-MM-DD (local)
     const [y, m, d] = dateKey.split('-').map(Number);
     const dt = new Date(y, (m || 1) - 1, d || 1);
     return dt.toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit' });
-}
-
-function getActiveJournalDate() {
-    return window.sessionStorage.getItem('btd_journal_active_date') || toLocalDateKey(new Date());
-}
-
-function setActiveJournalDate(dateKey) {
-    window.sessionStorage.setItem('btd_journal_active_date', dateKey);
-    const labelEl = document.getElementById('journal-active-date');
-    if (labelEl) labelEl.textContent = formatDayLabel(dateKey);
 }
 
 function getPreview(text) {
@@ -128,17 +61,56 @@ function getPreview(text) {
     return t.length > 140 ? `${t.slice(0, 140)}…` : t;
 }
 
-function renderStories() {
+async function loadPublishedJournal() {
+    try {
+        const res = await fetch(JOURNAL_DATA_URL, { cache: 'no-store' });
+        if (!res.ok) throw new Error('fetch failed');
+        const data = await res.json();
+        if (data && typeof data === 'object' && data.entries && typeof data.entries === 'object') {
+            publishedJournal = data;
+        } else {
+            publishedJournal = { version: 2, entries: {} };
+        }
+    } catch {
+        publishedJournal = { version: 2, entries: {} };
+    }
+}
+
+function renderJournalDetail(dateKey) {
+    const detailEl = document.getElementById('journal-detail');
+    if (!detailEl) return;
+
+    const e = publishedJournal.entries?.[dateKey];
+    if (!e) {
+        detailEl.hidden = true;
+        detailEl.innerHTML = '';
+        return;
+    }
+
+    const title = (e.title || '').trim();
+    const body = (e.body || '').trim();
+    detailEl.hidden = false;
+    detailEl.innerHTML = `
+        <div class="journal-detail-date">${escapeHTML(formatDayLabel(dateKey))}</div>
+        ${title ? `<div class="journal-detail-title">${escapeHTML(title)}</div>` : ''}
+        ${body ? `<div class="journal-detail-body">${escapeHTML(body)}</div>` : ''}
+    `;
+}
+
+function renderJournalList(selectedDate) {
     const listEl = document.getElementById('stories-list');
     if (!listEl) return;
 
-    const data = loadStories();
-    const entries = data.entries || {};
-    const activeDate = getActiveJournalDate();
-
+    const entries = publishedJournal.entries || {};
     const keys = Object.keys(entries).sort((a, b) => b.localeCompare(a));
+
     if (keys.length === 0) {
-        listEl.innerHTML = `<div class="story-item"><div class="story-date">No days yet. Tap “Write” to start today.</div></div>`;
+        listEl.innerHTML = `<div class="story-item"><div class="story-date">Nothing published yet.</div></div>`;
+        const detailEl = document.getElementById('journal-detail');
+        if (detailEl) {
+            detailEl.hidden = true;
+            detailEl.innerHTML = '';
+        }
         return;
     }
 
@@ -148,12 +120,11 @@ function renderStories() {
             const title = (e.title || '').trim();
             const body = (e.body || '').trim();
             const preview = getPreview(body);
-            const isActive = dateKey === activeDate;
+            const isActive = dateKey === selectedDate;
             return `
                 <div class="story-item ${isActive ? 'is-active' : ''}" role="button" tabindex="0" data-date="${escapeHTML(dateKey)}">
                     <div class="story-meta">
                         <div class="story-date">${escapeHTML(formatDayLabel(dateKey))}</div>
-                        <button class="story-delete" type="button" data-action="delete" data-date="${escapeHTML(dateKey)}">Delete</button>
                     </div>
                     ${title ? `<div class="story-title">${escapeHTML(title)}</div>` : ``}
                     ${preview ? `<div class="story-preview">${escapeHTML(preview)}</div>` : ``}
@@ -163,120 +134,23 @@ function renderStories() {
         .join('');
 }
 
-function setStoriesEditorOpen(open) {
-    const editor = document.getElementById('stories-editor');
-    const titleEl = document.getElementById('stories-title');
-    const bodyEl = document.getElementById('stories-body');
-    if (!editor || !titleEl || !bodyEl) return;
-
-    if (open) {
-        editor.classList.add('active');
-        setTimeout(() => {
-            bodyEl.focus();
-        }, 0);
-        return;
-    }
-
-    editor.classList.remove('active');
-}
-
-function loadDayIntoEditor(dateKey) {
-    const titleEl = document.getElementById('stories-title');
-    const bodyEl = document.getElementById('stories-body');
-    if (!titleEl || !bodyEl) return;
-
-    const data = loadStories();
-    const entry = data.entries?.[dateKey] || { title: '', body: '' };
-    titleEl.value = entry.title || '';
-    bodyEl.value = entry.body || '';
-}
-
-function initStories() {
-    const newBtn = document.getElementById('stories-new-btn');
-    const cancelBtn = document.getElementById('stories-cancel-btn');
-    const saveBtn = document.getElementById('stories-save-btn');
-    const todayBtn = document.getElementById('journal-today-btn');
+function initJournalReadOnly() {
     const listEl = document.getElementById('stories-list');
-    const titleEl = document.getElementById('stories-title');
-    const bodyEl = document.getElementById('stories-body');
+    if (!listEl) return;
 
-    if (!newBtn || !cancelBtn || !saveBtn || !listEl || !titleEl || !bodyEl || !todayBtn) return;
-
-    setActiveJournalDate(getActiveJournalDate());
-    renderStories();
-    loadDayIntoEditor(getActiveJournalDate());
-
-    todayBtn.addEventListener('click', () => {
-        const today = toLocalDateKey(new Date());
-        setActiveJournalDate(today);
-        loadDayIntoEditor(today);
-        renderStories();
-        setStoriesEditorOpen(true);
-    });
-
-    newBtn.addEventListener('click', () => {
-        setStoriesEditorOpen(true);
-    });
-
-    cancelBtn.addEventListener('click', () => {
-        setStoriesEditorOpen(false);
-        loadDayIntoEditor(getActiveJournalDate());
-    });
-
-    saveBtn.addEventListener('click', () => {
-        const title = titleEl.value.trim();
-        const body = bodyEl.value.trim();
-        const dateKey = getActiveJournalDate();
-        const data = loadStories();
-        const prev = data.entries?.[dateKey];
-        const nowIso = new Date().toISOString();
-
-        if (!data.entries) data.entries = {};
-        if (!title && !body) {
-            // If empty, delete the day's entry (if it exists)
-            if (prev) {
-                delete data.entries[dateKey];
-                saveStories(data);
-            }
-            setStoriesEditorOpen(false);
-            renderStories();
-            return;
-        }
-
-        data.entries[dateKey] = {
-            title,
-            body,
-            createdAt: prev?.createdAt || nowIso,
-            updatedAt: nowIso,
-        };
-        saveStories(data);
-        setStoriesEditorOpen(false);
-        renderStories();
+    loadPublishedJournal().then(() => {
+        const keys = Object.keys(publishedJournal.entries || {}).sort((a, b) => b.localeCompare(a));
+        const first = keys[0] || null;
+        renderJournalList(first);
+        if (first) renderJournalDetail(first);
     });
 
     listEl.addEventListener('click', (e) => {
-        const target = e.target;
-        if (!(target instanceof HTMLElement)) return;
-        const action = target.dataset.action;
-
-        if (action === 'delete') {
-            const dateKey = target.dataset.date;
-            if (!dateKey) return;
-            const data = loadStories();
-            if (data.entries?.[dateKey]) {
-                delete data.entries[dateKey];
-                saveStories(data);
-            }
-            renderStories();
-            return;
-        }
-
-        const item = target.closest('.story-item');
+        const item = e.target.closest('.story-item');
         const dateKey = item?.getAttribute('data-date');
         if (!dateKey) return;
-        setActiveJournalDate(dateKey);
-        loadDayIntoEditor(dateKey);
-        renderStories();
+        renderJournalList(dateKey);
+        renderJournalDetail(dateKey);
     });
 
     listEl.addEventListener('keydown', (e) => {
@@ -287,9 +161,8 @@ function initStories() {
         e.preventDefault();
         const dateKey = target.getAttribute('data-date');
         if (!dateKey) return;
-        setActiveJournalDate(dateKey);
-        loadDayIntoEditor(dateKey);
-        renderStories();
+        renderJournalList(dateKey);
+        renderJournalDetail(dateKey);
     });
 }
 
@@ -390,7 +263,7 @@ function setupVideoPlayer(videoId, playButtonId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    initStories();
+    initJournalReadOnly();
 
     setupVideoPlayer('video1', 'playButton1');
     setupVideoPlayer('video2', 'playButton2');
