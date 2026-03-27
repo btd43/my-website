@@ -395,15 +395,6 @@ body {
     justify-content: flex-end;
 }
 
-.journal-readonly-note {
-    max-width: 640px;
-    margin-top: 10px;
-    margin-bottom: 24px;
-    font-size: 12px;
-    font-weight: 300;
-    color: #666;
-}
-
 .journal-layout {
     max-width: 640px;
 }
@@ -729,9 +720,6 @@ body {
         max-width: 100%;
     }
 
-    .journal-readonly-note {
-        max-width: 100%;
-    }
 }
 
 /* iPhone Safari specific fixes */
