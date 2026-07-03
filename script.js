@@ -13,6 +13,10 @@ document.querySelectorAll('.nav-item').forEach(anchor => {
             
             // Show target section
             targetSection.classList.add('active');
+
+            if (targetId === 'content') {
+                initVideoThumbnails();
+            }
             
             // Update active nav item
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -222,6 +226,39 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Minimalist video player functionality
+let videoThumbnailsInitialized = false;
+
+function initVideoThumbnails() {
+    if (videoThumbnailsInitialized) return;
+    videoThumbnailsInitialized = true;
+
+    ['video1', 'video2', 'video3'].forEach(function(videoId) {
+        const video = document.getElementById(videoId);
+        if (!video) return;
+
+        function showThumbnail() {
+            try {
+                if (video.readyState >= 1) {
+                    video.currentTime = 0.01;
+                    video.pause();
+                }
+            } catch (e) {
+                console.log('Thumbnail load error:', e);
+            }
+        }
+
+        video.load();
+        video.currentTime = 0.01;
+
+        video.addEventListener('loadedmetadata', showThumbnail, { once: true });
+        video.addEventListener('loadeddata', showThumbnail, { once: true });
+        video.addEventListener('canplay', showThumbnail, { once: true });
+        video.addEventListener('seeked', function() {
+            video.pause();
+        }, { once: true });
+    });
+}
+
 function setupVideoPlayer(videoId, playButtonId) {
     const video = document.getElementById(videoId);
     const playButton = document.getElementById(playButtonId);
@@ -268,71 +305,4 @@ document.addEventListener('DOMContentLoaded', function() {
     setupVideoPlayer('video1', 'playButton1');
     setupVideoPlayer('video2', 'playButton2');
     setupVideoPlayer('video3', 'playButton3');
-    
-    // Force load video metadata and display thumbnails on mobile
-    const videos = ['video1', 'video2', 'video3'];
-    videos.forEach(function(videoId) {
-        const video = document.getElementById(videoId);
-        if (video) {
-            // Function to show thumbnail
-            function showThumbnail() {
-                try {
-                    if (video.readyState >= 1) { // HAVE_METADATA or higher
-                        // Seek to first frame to display thumbnail
-                        video.currentTime = 0.01;
-                        video.pause();
-                        // Force a repaint
-                        video.style.display = 'none';
-                        video.offsetHeight; // Trigger reflow
-                        video.style.display = 'block';
-                    }
-                } catch(e) {
-                    console.log('Thumbnail load error:', e);
-                }
-            }
-            
-            // Load metadata immediately
-            video.load();
-            
-            // Set initial time to show thumbnail
-            video.currentTime = 0.01;
-            
-            // Multiple strategies to ensure thumbnail shows
-            video.addEventListener('loadedmetadata', function() {
-                showThumbnail();
-            }, { once: true });
-            
-            video.addEventListener('loadeddata', function() {
-                showThumbnail();
-            }, { once: true });
-            
-            video.addEventListener('canplay', function() {
-                showThumbnail();
-            }, { once: true });
-            
-            video.addEventListener('seeked', function() {
-                video.pause();
-            }, { once: true });
-            
-            // Fallback: try after delays
-            setTimeout(function() {
-                showThumbnail();
-            }, 100);
-            
-            setTimeout(function() {
-                showThumbnail();
-            }, 500);
-            
-            // Also try when video becomes visible (for lazy loading)
-            const observer = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        showThumbnail();
-                        observer.unobserve(video);
-                    }
-                });
-            }, { threshold: 0.1 });
-            observer.observe(video);
-        }
-    });
 });

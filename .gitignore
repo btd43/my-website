@@ -2,5 +2,8 @@
 images/video4.mp4
 images/video5.mp4
 
+# Large PDF (GitHub 100MB limit) — host externally for production link
+files/trevor-stewart-june-2024.pdf
+
 # macOS
 .DS_Store
