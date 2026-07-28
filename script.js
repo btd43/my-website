@@ -1,32 +1,46 @@
 // Page navigation - show/hide sections
+function showSection(targetId, scrollTargetId) {
+    const targetSection = document.getElementById(targetId);
+    if (!targetSection) return;
+
+    document.querySelectorAll('.section').forEach(section => {
+        section.classList.remove('active');
+    });
+    targetSection.classList.add('active');
+
+    if (targetId === 'content') {
+        initVideoThumbnails();
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.getAttribute('href') === `#${targetId}`);
+    });
+
+    if (scrollTargetId) {
+        requestAnimationFrame(function() {
+            const scrollTarget = document.getElementById(scrollTargetId);
+            if (scrollTarget) {
+                scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    } else {
+        window.scrollTo(0, 0);
+    }
+}
+
 document.querySelectorAll('.nav-item').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1); // Remove #
-        const targetSection = document.getElementById(targetId);
-        
-        if (targetSection) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Show target section
-            targetSection.classList.add('active');
+        const targetId = this.getAttribute('href').substring(1);
+        showSection(targetId);
+    });
+});
 
-            if (targetId === 'content') {
-                initVideoThumbnails();
-            }
-            
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            this.classList.add('active');
-            
-            // Scroll to top
-            window.scrollTo(0, 0);
-        }
+document.querySelectorAll('.timeline-video-link').forEach(link => {
+    link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const scrollTargetId = this.getAttribute('data-video-target');
+        showSection('content', scrollTargetId);
     });
 });
 
