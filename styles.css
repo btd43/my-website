@@ -8,6 +8,11 @@ html {
     scroll-behavior: auto;
 }
 
+:root {
+    --logo-link-blue: #718cb7;
+    --logo-link-blue-hover: #3554b3;
+}
+
 body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
@@ -362,14 +367,14 @@ body {
 }
 
 .founder-link {
-    color: #666;
+    color: var(--logo-link-blue);
     text-decoration: none;
     font-weight: 300;
     transition: color 0.2s ease;
 }
 
 .founder-link:hover {
-    color: #999;
+    color: var(--logo-link-blue-hover);
 }
 
 /* Music Section */
