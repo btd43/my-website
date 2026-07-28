@@ -225,6 +225,12 @@ body {
     touch-action: manipulation;
 }
 
+.video-player-wrapper--cropped video {
+    aspect-ratio: 16 / 9;
+    max-width: 640px;
+    min-height: 0;
+}
+
 .video-player-wrapper video {
     width: 100%;
     max-width: 640px;
