@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    font-family: Helvetica, sans-serif;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 300;
     line-height: 1.6;
@@ -362,15 +362,14 @@ body {
 }
 
 .founder-link {
-    color: #2563eb;
-    text-decoration: underline;
-    text-underline-offset: 2px;
+    color: #666;
+    text-decoration: none;
     font-weight: 300;
     transition: color 0.2s ease;
 }
 
 .founder-link:hover {
-    color: #1d4ed8;
+    color: #999;
 }
 
 /* Music Section */
