@@ -299,6 +299,16 @@ body {
     margin-top: 2px;
 }
 
+.bio-intro {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #000;
+    margin-top: 20px;
+    margin-bottom: 0;
+    max-width: 640px;
+}
+
 .bio-divider {
     width: 100%;
     max-width: 640px;
