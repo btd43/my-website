@@ -32,6 +32,7 @@ document.querySelectorAll('.nav-item').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const targetId = this.getAttribute('href').substring(1);
+        history.replaceState(null, '', `#${targetId}`);
         showSection(targetId);
     });
 });
@@ -44,11 +45,13 @@ document.querySelectorAll('.timeline-video-link').forEach(link => {
     });
 });
 
-// Show bio section by default on page load
+// Show section from URL hash, or bio by default
 document.addEventListener('DOMContentLoaded', function() {
-    const bioSection = document.getElementById('bio');
-    if (bioSection) {
-        bioSection.classList.add('active');
+    const hash = window.location.hash.substring(1);
+    if (hash && document.getElementById(hash)) {
+        showSection(hash);
+    } else {
+        showSection('bio');
     }
 });
 

@@ -9,8 +9,8 @@ html {
 }
 
 :root {
-    --logo-link-blue: #718cb7;
-    --logo-link-blue-hover: #3554b3;
+    --logo-link-blue: #1638b3;
+    --logo-link-blue-hover: #0c1d90;
 }
 
 body {
@@ -350,6 +350,39 @@ body {
     margin-top: 36px;
 }
 
+/* Credits */
+.credits-wrapper {
+    max-width: 640px;
+}
+
+.credits-heading {
+    font-size: 12px;
+    font-weight: 300;
+    color: #000;
+    margin-bottom: 28px;
+}
+
+.credits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.credits-list li {
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 18px;
+    color: #000;
+}
+
+.credits-detail {
+    display: block;
+    margin-top: 2px;
+    color: #666;
+    font-weight: 300;
+}
+
 .bio-location {
     font-size: 16px;
     font-weight: 300;
@@ -366,7 +399,8 @@ body {
     margin-top: 20px;
 }
 
-.founder-link {
+.founder-link,
+.founder-link:visited {
     color: var(--logo-link-blue);
     text-decoration: none;
     font-weight: 300;
