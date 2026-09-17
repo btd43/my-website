@@ -14,8 +14,11 @@ function showSection(targetId, scrollTargetId) {
 
     document.querySelectorAll('.nav-item').forEach(item => {
         const href = item.getAttribute('href').substring(1);
-        const isCreditsNav = href === 'press-credits' && (targetId === 'bio' && scrollTargetId === 'press-credits');
-        item.classList.toggle('active', href === targetId || isCreditsNav);
+        if (scrollTargetId === 'press-credits') {
+            item.classList.toggle('active', href === 'press-credits');
+        } else {
+            item.classList.toggle('active', href === targetId);
+        }
     });
 
     if (scrollTargetId) {
@@ -32,8 +35,10 @@ function showSection(targetId, scrollTargetId) {
 
 document.querySelectorAll('.nav-item').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
+        const href = this.getAttribute('href') || '';
+        if (!href.startsWith('#')) return;
         e.preventDefault();
-        const targetId = this.getAttribute('href').substring(1);
+        const targetId = href.substring(1);
         history.replaceState(null, '', `#${targetId}`);
         if (targetId === 'press-credits') {
             showSection('bio', 'press-credits');
