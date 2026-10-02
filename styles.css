@@ -285,10 +285,8 @@ body {
 
 /* Bio Section */
 .bio-name-block {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: max-content;
+    display: inline-block;
+    width: min-content;
 }
 
 .bio-portrait {
