@@ -284,11 +284,26 @@ body {
 }
 
 /* Bio Section */
+.bio-name-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
 .bio-name {
     font-size: 24px;
     font-weight: 300;
     color: #000;
     margin-bottom: 0;
+}
+
+.bio-portrait {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    object-position: 28% 18%;
+    display: block;
+    flex-shrink: 0;
 }
 
 .bio-email {
@@ -358,45 +373,6 @@ body {
 
 .timeline-footer {
     margin-top: 36px;
-}
-
-/* Credits */
-.press-credits--home {
-    margin-top: 36px;
-    padding-top: 28px;
-    border-top: 1px solid #e8e8e8;
-}
-
-.credits-wrapper {
-    max-width: 640px;
-}
-
-.credits-heading {
-    font-size: 12px;
-    font-weight: 300;
-    color: #000;
-    margin-bottom: 28px;
-}
-
-.credits-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.credits-list li {
-    font-size: 12px;
-    font-weight: 300;
-    line-height: 1.7;
-    margin-bottom: 8px;
-    color: #000;
-}
-
-.credits-detail {
-    display: block;
-    margin-top: 2px;
-    color: #666;
-    font-weight: 300;
 }
 
 .bio-location {
@@ -594,6 +570,11 @@ body {
     /* Bio section mobile adjustments */
     .bio-name {
         font-size: 20px;
+    }
+
+    .bio-portrait {
+        width: 40px;
+        height: 40px;
     }
 
     .bio-email {

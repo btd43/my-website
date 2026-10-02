@@ -14,11 +14,7 @@ function showSection(targetId, scrollTargetId) {
 
     document.querySelectorAll('.nav-item').forEach(item => {
         const href = item.getAttribute('href').substring(1);
-        if (scrollTargetId === 'press-credits') {
-            item.classList.toggle('active', href === 'press-credits');
-        } else {
-            item.classList.toggle('active', href === targetId);
-        }
+        item.classList.toggle('active', href === targetId);
     });
 
     if (scrollTargetId) {
@@ -40,11 +36,7 @@ document.querySelectorAll('.nav-item').forEach(anchor => {
         e.preventDefault();
         const targetId = href.substring(1);
         history.replaceState(null, '', `#${targetId}`);
-        if (targetId === 'press-credits') {
-            showSection('bio', 'press-credits');
-        } else {
-            showSection(targetId);
-        }
+        showSection(targetId);
     });
 });
 
@@ -59,10 +51,7 @@ document.querySelectorAll('.timeline-video-link').forEach(link => {
 // Show section from URL hash, or bio by default
 document.addEventListener('DOMContentLoaded', function() {
     const hash = window.location.hash.substring(1);
-    if (hash === 'press-credits' || hash === 'credits') {
-        history.replaceState(null, '', '#press-credits');
-        showSection('bio', 'press-credits');
-    } else if (hash && document.getElementById(hash)) {
+    if (hash && document.getElementById(hash)) {
         showSection(hash);
     } else {
         showSection('bio');
