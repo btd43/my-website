@@ -284,10 +284,18 @@ body {
 }
 
 /* Bio Section */
-.bio-name-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.bio-name-block {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: max-content;
+}
+
+.bio-portrait {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin-bottom: 10px;
 }
 
 .bio-name {
@@ -295,15 +303,7 @@ body {
     font-weight: 300;
     color: #000;
     margin-bottom: 0;
-}
-
-.bio-portrait {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    object-position: 28% 18%;
-    display: block;
-    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .bio-email {
@@ -570,11 +570,6 @@ body {
     /* Bio section mobile adjustments */
     .bio-name {
         font-size: 20px;
-    }
-
-    .bio-portrait {
-        width: 40px;
-        height: 40px;
     }
 
     .bio-email {
